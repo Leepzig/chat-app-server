@@ -16,28 +16,29 @@ const io = new Server(server, {
     }
   });
 
-  app.use(cors({origin}))
-
+app.use(cors({origin}))
 const corsOptions = {origin}
 
-  io.on('connection', (socket) => {
-      socket.on('send message', (msg) => {
-          socket.broadcast.emit('sent message', msg)
-        })
-        socket.on('disconnect', () => {
-            console.log('user disconnected', socket.id)
-        })
+io.on('connection', (socket) => {
+    socket.on('send message', (msg) => {
+        socket.broadcast.emit('sent message', msg)
     })
-    
-    server.listen(PORT, () => {
-        console.log(`Server is listening on port ${PORT}`)
+    socket.on('disconnect', () => {
+        console.log('user disconnected', socket.id)
     })
+})
+
+server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`)
+})
 
 //Database Setup
 const diskdb = require('diskdb');
 const db = diskdb.connect('./data', ['messages', 'users']);
 
 //Database Helpers
+
+//switches the online property on/off
 const changeOnlineStatus = req => {
     return db.users.update({id:req.body.id}, {online:!req.body.online})
 }
@@ -54,7 +55,9 @@ app.get("/users", cors(corsOptions), (req, res) => {
 })
 
 app.patch("/users/:id", cors(corsOptions), (req, res) => {
-    res.json(changeOnlineStatus(req))
+    changeOnlineStatus(req)
+
+    res.json(db.users.find({id:req.body.id}))
 })
 
 app.post('/messages', cors(corsOptions), (req, res) => {
