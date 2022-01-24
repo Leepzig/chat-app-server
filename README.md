@@ -23,4 +23,5 @@ Server is listening on port 3001
 
 - Two users can log in as the same user.
 - Users online status don't match with whether they're actually online or not.
-- 
+- refreshing the page logs a user out
+
