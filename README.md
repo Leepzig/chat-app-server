@@ -1,6 +1,4 @@
 
-# Summary 
-
 # Packages
 - express
 - socket.io (used for websockets)
