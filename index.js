@@ -62,7 +62,7 @@ app.get("/messages", cors(corsOptions), (req, res) => {
 })
 
 app.get("/users", cors(corsOptions), (req, res) => {
-    const users = db.users.find({online:false})
+    const users = db.users.find()
     console.log("Should be users offline:", users)
     res.json(users)
 })
