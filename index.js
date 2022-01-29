@@ -1,7 +1,7 @@
 const express = require('express')
 const http = require('http')
-const { Server } = require('socket.io')
 const app = express()
+const { Server } = require('socket.io')
 
 const server = http.createServer(app)
 
@@ -19,12 +19,20 @@ const io = new Server(server, {
 app.use(cors({origin}))
 const corsOptions = {origin}
 
+
 io.on('connection', (socket) => {
+    //set username with socketId
+    console.log('user connected!', socket.id)
+
+    socket.emit("connect user", socket.id)
+
     socket.on('send message', (msg) => {
         socket.broadcast.emit('sent message', msg)
     })
     socket.on('disconnect', () => {
-        // console.log('user disconnected', socket.id)
+        console.log('user disconnected', socket.id)
+        changeToOffline(socket.id)
+        //
     })
 })
 
@@ -38,9 +46,13 @@ const db = diskdb.connect('./data', ['messages', 'users']);
 
 //Database Helpers
 
-//switches the online property on/off
-const changeOnlineStatus = req => {
-    return db.users.update({id:req.body.id}, {online:!req.body.online})
+//switches the online property to off
+const changeToOffline = socketId => {
+    db.users.update({socketId:socketId}, {online:false})
+}
+
+const connectUser = (user) => {
+    db.users.update({id:user.id}, {online:true, socketId:user.socketId})
 }
 
 //CRUD Routes
@@ -50,13 +62,14 @@ app.get("/messages", cors(corsOptions), (req, res) => {
 })
 
 app.get("/users", cors(corsOptions), (req, res) => {
-    const users = db.users.find()
+    const users = db.users.find({online:false})
+    console.log("Should be users offline:", users)
     res.json(users)
 })
 
 app.patch("/users/:id", cors(corsOptions), (req, res) => {
-    changeOnlineStatus(req)
-
+    connectUser(req.body)
+    console.log("Argument going into connectUser", req.body)
     res.json(db.users.find({id:req.body.id}))
 })
 
@@ -65,3 +78,11 @@ app.post('/messages', cors(corsOptions), (req, res) => {
     res.json(data)
 })
 
+// module.exports({app})
+
+// emits connect
+//starts listening for 'connect user'
+//loadUsers()
+//get"/users"
+//displays all users
+//click on username => 
