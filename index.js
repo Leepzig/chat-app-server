@@ -30,6 +30,9 @@ io.on('connection', (socket) => {
         console.log('user disconnected', socket.id)
         changeToOffline(socket.id)
     })
+    socket.on('log off', () => {
+        changeToOffline(socket.id)
+    })
 })
 
 server.listen(PORT, () => {
