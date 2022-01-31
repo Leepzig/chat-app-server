@@ -19,7 +19,9 @@ Server is listening on port 3001
 
 # Bugs
 
-- Two users can log in as the same user.
-- Users online statuses don't match with whether they're actually online or not.
-- refreshing the page logs a user out
+- If two users try to log on at the same time, it's possible they could log on as the same user.
+- The only way to log out is to refresh the page.
+- If the server is shut down while two users are logged in, then you have to manually change the online status in the database for the users to be able to login again.
+
+
 

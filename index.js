@@ -21,9 +21,6 @@ const corsOptions = {origin}
 
 
 io.on('connection', (socket) => {
-    //set username with socketId
-    console.log('user connected!', socket.id)
-
     socket.emit("connect user", socket.id)
 
     socket.on('send message', (msg) => {
@@ -32,7 +29,6 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id)
         changeToOffline(socket.id)
-        //
     })
 })
 
@@ -63,13 +59,11 @@ app.get("/messages", cors(corsOptions), (req, res) => {
 
 app.get("/users", cors(corsOptions), (req, res) => {
     const users = db.users.find()
-    console.log("Should be users offline:", users)
     res.json(users)
 })
 
 app.patch("/users/:id", cors(corsOptions), (req, res) => {
     connectUser(req.body)
-    console.log("Argument going into connectUser", req.body)
     res.json(db.users.find({id:req.body.id}))
 })
 
@@ -79,10 +73,3 @@ app.post('/messages', cors(corsOptions), (req, res) => {
 })
 
 // module.exports({app})
-
-// emits connect
-//starts listening for 'connect user'
-//loadUsers()
-//get"/users"
-//displays all users
-//click on username => 
