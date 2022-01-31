@@ -48,7 +48,8 @@ const changeToOffline = socketId => {
 }
 
 const connectUser = (user) => {
-    db.users.update({id:user.id}, {online:true, socketId:user.socketId})
+    const updatedUser = db.users.update({id:user.id}, {online:true, socketId:user.socketId})
+    return updatedUser
 }
 
 //CRUD Routes
@@ -64,7 +65,7 @@ app.get("/users", cors(corsOptions), (req, res) => {
 
 app.patch("/users/:id", cors(corsOptions), (req, res) => {
     connectUser(req.body)
-    res.json(db.users.find({id:req.body.id}))
+    res.json(db.users.findOne({id:req.body.id}))
 })
 
 app.post('/messages', cors(corsOptions), (req, res) => {
