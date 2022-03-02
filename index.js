@@ -1,13 +1,17 @@
 const express = require('express')
 const http = require('http')
 const app = express()
+
 const { Server } = require('socket.io')
+
+require('dotenv').config()
 
 const server = http.createServer(app)
 
 const cors = require('cors')
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
+
 const PORT = process.env.PORT || 3001
 const origin = process.env.ORIGIN || "http://localhost:3000"
 const io = new Server(server, {
@@ -18,6 +22,8 @@ const io = new Server(server, {
 
 app.use(cors({origin}))
 const corsOptions = {origin}
+
+// index.js
 
 
 io.on('connection', (socket) => {
@@ -55,7 +61,12 @@ const connectUser = (user) => {
     return updatedUser
 }
 
+const userOnline = username => {
+
+}
+
 //CRUD Routes
+
 app.get("/messages", cors(corsOptions), (req, res) => {
     const messages = db.messages.find()
     res.json(messages)
